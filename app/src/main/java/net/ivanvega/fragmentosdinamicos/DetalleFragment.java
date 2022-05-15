@@ -1,12 +1,16 @@
 package net.ivanvega.fragmentosdinamicos;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,11 +18,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.MediaController;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import net.ivanvega.fragmentosdinamicos.servicios.Servicio;
+import net.ivanvega.fragmentosdinamicos.Service.MiBinder;
 
 import java.io.IOException;
 
@@ -34,6 +37,8 @@ public class DetalleFragment extends Fragment
 
 {
 
+
+    public static final String ARG_SERVICIO =  "idLibro";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -50,6 +55,10 @@ public class DetalleFragment extends Fragment
 
     MediaPlayer mediaPlayer;
     MediaController mediaController;
+
+    Service mServicio;
+
+    Libro uriLibro;
 
     public DetalleFragment() {
         // Required empty public constructor
@@ -80,7 +89,23 @@ public class DetalleFragment extends Fragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        //CONECTAR
+        Intent intent = new Intent(getContext(), Service.class);
+        getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
+
+    ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder iBinder) {
+            mServicio = ((MiBinder)iBinder).getService();
+            mServicio.prepareMediaPlayer(DetalleFragment.this, uriLibro);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,6 +156,8 @@ public class DetalleFragment extends Fragment
         lblAutor.setText(libro.getAutor());
         imvPortada.setImageResource(libro.getRecursoImagen());
 
+        uriLibro = libro;
+
         if( mediaPlayer!= null){
             mediaPlayer.release();
         }
@@ -139,8 +166,6 @@ public class DetalleFragment extends Fragment
             mediaController = new MediaController(getActivity());
             mediaPlayer.setOnPreparedListener(this);
             try {
-                Intent miMusica=new Intent(getActivity(), Servicio.class);
-                getActivity().startService(miMusica);
                 mediaPlayer.setDataSource(getActivity(),
                         Uri.parse(libro.getUrl()));
                 mediaPlayer.prepareAsync();
@@ -160,7 +185,7 @@ public class DetalleFragment extends Fragment
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
 
-        mediaController.setMediaPlayer(this);
+        mediaController.setMediaPlayer(mServicio);
         mediaController.setAnchorView(
                 getView().findViewById(R.id.fragment_detalle_layout_root));
         mediaController.setEnabled(true);
@@ -168,11 +193,6 @@ public class DetalleFragment extends Fragment
         mediaPlayer.start();
 
 
-    }
-
-    public void enciendeMusica(){
-        Intent miRep=new Intent(getActivity(),Servicio.class);
-        getActivity().startService(miRep);
     }
 
     @Override
