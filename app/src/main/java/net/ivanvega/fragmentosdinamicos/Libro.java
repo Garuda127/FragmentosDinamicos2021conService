@@ -6,13 +6,13 @@ public class Libro {
 
     static Vector<Libro> libros = new Vector<Libro>();
     static{
-        final String link1 = "";
-        final String link2 = "";
-        final String link3 = "";
-        final String link4 = "";
-        final String link5 = "";
-        final String link6 = "";
-        final String link7 = "";
+        final String link1 = "https://github.com/Garuda127/FragmentosDinamicos2021conService/blob/main/Audiosmp3/audio%20(1).mp3?raw=true";
+        final String link2 = "https://github.com/Garuda127/FragmentosDinamicos2021conService/blob/main/Audiosmp3/audio%20(2).mp3?raw=true";
+        final String link3 = "https://github.com/Garuda127/FragmentosDinamicos2021conService/blob/main/Audiosmp3/audio%20(3).mp3?raw=true";
+        final String link4 = "https://github.com/Garuda127/FragmentosDinamicos2021conService/blob/main/Audiosmp3/audio%20(4).mp3?raw=true";
+        final String link5 = "https://github.com/Garuda127/FragmentosDinamicos2021conService/blob/main/Audiosmp3/audio%20(5).mp3?raw=true";
+        final String link6 = "https://github.com/Garuda127/FragmentosDinamicos2021conService/blob/main/Audiosmp3/audio%20(6).mp3?raw=true";
+        final String link7 = "https://github.com/Garuda127/FragmentosDinamicos2021conService/blob/main/Audiosmp3/audio%20(7).mp3?raw=true";
 
         libros.add(new Libro("Kappa", "Akutagawa", R.drawable.kappa, link1, Libro.G_S_XIX, false, false));
         libros.add(new Libro("Avecilla", "Alas Clarín, Leopoldo", R.drawable.avecilla, link2, Libro.G_S_XIX, true, false));
